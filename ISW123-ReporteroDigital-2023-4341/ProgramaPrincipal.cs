@@ -58,7 +58,7 @@ namespace ISW123_ReporteroDigital_2023_4341
 
         // Datos de visitas de noticias
 
-        public async Task<string> DescargarEstadisticasAsycn()
+        public async Task<string> DescargarEstadisticasAsycn(bool explotar)
         {
             OnIniciando?.Invoke("Los Datos de Analisis...");
 
@@ -67,8 +67,7 @@ namespace ISW123_ReporteroDigital_2023_4341
 
             // Uso de excepcion personalizada throw new
 
-            Random rnd = new Random();
-            if (rnd.Next(0, 2) == 0) 
+            if (explotar)
             {
                 throw new ExcepcionReportero("Mi loco, se daño la vuelta, no hicieron como a maduro y se cayo el sistema.", "Estadisticas");
             }
@@ -106,6 +105,17 @@ namespace ISW123_ReporteroDigital_2023_4341
 
             Console.WriteLine($"\nBienvenido manito. Vamos a armar la noticia.\n");
 
+
+            //Seleccion de modo de fallo
+            Console.WriteLine("¿Quieres que las estadísticas EXPLOTEN? (Escribe 'S' para Sí, cualquier otra tecla para No):");
+            string respuesta = Console.ReadLine()?.ToUpper() ?? "N";
+            bool modoExplosion = (respuesta == "S");
+
+            if (modoExplosion)
+                Console.WriteLine(" OJO: Elegiste que el sistema falle a propósito.\n");
+            else
+                Console.WriteLine(" OJO: Elegiste que todo funcione bien.\n");
+
             GestorNoticias gestor = new GestorNoticias();
 
             // Suscripcion a eventos y try catch
@@ -115,7 +125,7 @@ namespace ISW123_ReporteroDigital_2023_4341
             {
                 var tareaTexto = gestor.DescargarTextoAsycn();
                 var tareaFotos = gestor.DescargarImagenAsync();
-                var tareaStats = gestor.DescargarEstadisticasAsycn();
+                var tareaStats = gestor.DescargarEstadisticasAsycn(modoExplosion);
 
                 // Esperamos a que todas terminen (o que alguna falle)
                 await Task.WhenAll(tareaTexto, tareaFotos, tareaStats);
